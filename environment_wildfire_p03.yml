@@ -1,0 +1,82 @@
+# ══════════════════════════════════════════════════════════════════════════
+# Conda Environment — GIS Portfolio Project 03
+# Wildfire Perimeter Growth Prediction (2021 Dixie Fire)
+#
+# CREATE:  conda env create -f environment_wildfire_p03.yml
+# ACTIVATE: conda activate wildfire-p03
+# UPDATE:  conda env update -f environment_wildfire_p03.yml --prune
+# REMOVE:  conda env remove -n wildfire-p03
+# ══════════════════════════════════════════════════════════════════════════
+
+name: wildfire-p03
+
+channels:
+  - conda-forge       # Primary channel — best coverage for geospatial stack
+  - defaults          # Fallback for core scientific packages
+
+dependencies:
+  # ── Python runtime ────────────────────────────────────────────────────
+  # 3.11 is the sweet spot: full support for all packages below, stable
+  - python=3.11
+
+  # ── Core scientific stack (conda-managed for C extension compatibility) ─
+  - numpy>=1.24,<2.0          # Pin below 2.0; rasterio/scipy not yet 2.0-stable
+  - pandas>=2.0,<2.2
+  - scipy>=1.11,<1.13         # Used in TPI uniform_filter computation
+  - matplotlib>=3.7,<3.9
+  - scikit-learn>=1.3,<1.5
+
+  # ── Geospatial core (must be conda-installed, not pip) ────────────────
+  # GDAL, PROJ, and GEOS are C libraries. conda-forge handles them cleanly.
+  # pip-installing rasterio/geopandas on top of wrong GDAL = hours of pain.
+  - gdal>=3.7,<3.9            # Core C library — rasterio and geopandas depend on this
+  - proj>=9.2                 # Coordinate reference system engine
+  - geos>=3.12                # Geometry engine for shapely/geopandas
+  - rasterio>=1.3.9,<1.4      # Raster I/O (reads/writes GeoTIFFs)
+  - geopandas>=0.14,<0.15     # Vector spatial data (GeoDataFrames)
+  - shapely>=2.0,<2.1         # Geometry operations (Shapely 2.x = major speedup)
+  - pyproj>=3.6               # Python bindings for PROJ
+  - fiona>=1.9                # Vector file I/O backend for geopandas
+
+  # ── Raster extended stack ─────────────────────────────────────────────
+  - rioxarray>=0.15,<0.17     # rasterio + xarray integration (NDVI workflows)
+  - xarray>=2023.6            # N-D labeled arrays (used by rioxarray)
+  - rasterstats>=0.19         # Zonal statistics (raster → per-polygon summaries)
+  - contextily>=1.4           # Basemap tile fetching for matplotlib plots
+
+  # ── Network / OSM ─────────────────────────────────────────────────────
+  - osmnx>=1.9,<2.0           # OpenStreetMap road network download
+  - networkx>=3.1             # Graph library (osmnx dependency)
+
+  # ── Spatial statistics (PySAL ecosystem) ──────────────────────────────
+  - libpysal>=4.9,<5.0        # Spatial weights matrices (Queen contiguity)
+  - esda>=2.5,<3.0            # Exploratory spatial data analysis (Moran's I)
+
+  # ── Web mapping ───────────────────────────────────────────────────────
+  - folium>=0.15,<0.17        # Interactive Leaflet.js maps in Python
+
+  # ── Elevation data ────────────────────────────────────────────────────
+  - py3dep>=0.16,<0.18        # USGS 3D Elevation Program (3DEP) client
+
+  # ── Utilities ─────────────────────────────────────────────────────────
+  - requests>=2.31            # HTTP for NIFC API calls
+  - tqdm>=4.66                # Progress bars for long loops
+  - jupyterlab>=4.0           # IDE notebook interface
+  - ipykernel>=6.25           # Kernel registration for Jupyter
+  - ipywidgets>=8.1           # Interactive widgets in notebooks
+  - notebook>=7.0             # Classic notebook interface (optional)
+
+  # ── pip-only packages (not available on conda-forge) ──────────────────
+  - pip
+  - pip:
+    - earthaccess>=0.9,<0.11  # NASA EarthData auth + search (pip only)
+    # herbie-data is listed here for Extension A (wind data)
+    # Uncomment when you reach that extension:
+    # - herbie-data>=2024.3
+
+# ══════════════════════════════════════════════════════════════════════════
+# DISK SPACE NOTE:
+# This environment installs ~2.5 GB of packages (GDAL, numpy, etc.).
+# The project itself needs ~3 GB for Landsat satellite imagery.
+# Recommended: ~6 GB free before starting.
+# ══════════════════════════════════════════════════════════════════════════

@@ -1,0 +1,21 @@
+# Raw/cached geospatial data (regenerate via the notebook)
+data/
+cache/
+*.tif
+*.bak
+
+# Legacy/starter notebook — superseded by Wildfire_Prediction_RS_ML.ipynb,
+# never executed, still has geopandas 0.14-incompatible .union_all() calls
+Project03_Wildfire_Risk_Prediction.ipynb
+
+# Step-by-step guide docs — not wanted in the repo
+Project03_StepByStep_Guide.docx
+Project03_StepByStep_Guide.pdf
+
+# Jupyter / Python
+.ipynb_checkpoints/
+__pycache__/
+
+# OS / editor
+.DS_Store
+.claude/
